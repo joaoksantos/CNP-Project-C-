@@ -3,7 +3,7 @@ export interface Criminoso {
   nomeCompleto: string
   cpf: string
   status: 'Aprovado' | 'Recusado' | 'Pendente'
-  situacaoPena: string
+  situacaoPena: string[]
   antecedentes: string[]
   endereco: string
 }

@@ -23,7 +23,7 @@ public class Criminoso
     public EnumStatusCriminoso Status { get; set; }
 
     
-    public EnumSituacaoPena SituacaoPena { get; set; }
+    public List<string>  SituacaoPena { get; set; }
 
     [Required]
     public List<string> Antecedentes { get; set; } = default!;
