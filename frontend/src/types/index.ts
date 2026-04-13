@@ -3,7 +3,9 @@ export interface Criminoso {
   nomeCompleto: string
   cpf: string
   status: 'Aprovado' | 'Recusado' | 'Pendente'
+  situacaoPena: string
   antecedentes: string[]
+  endereco: string
 }
 
 export interface LoginRequest {
@@ -24,3 +26,13 @@ export interface Usuario {
   role: string
   ativo: boolean
 }
+
+//Teste de enum para situação da pena
+export type SituacaoPena =
+  | 'Desconhecido'
+  | 'EmLiberdadecondicional'
+  | 'Foragido'
+  | 'CumprindoPena'
+  | 'EmRegimeSemiAberto'
+  | 'EmRegimeFechado'
+  | 'Solto'

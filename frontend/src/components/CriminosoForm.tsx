@@ -1,23 +1,40 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Criminoso } from '@/types'
 import { criminosoService } from '@/services/api'
 
 interface CriminosoFormProps {
   criminoso?: Criminoso
+  isAdmin?: boolean
   onSuccess?: () => void
 }
 
-export function CriminosoForm({ criminoso, onSuccess }: CriminosoFormProps) {
+export function CriminosoForm({ criminoso, isAdmin, onSuccess }: CriminosoFormProps) {
   const [formData, setFormData] = useState({
     nomeCompleto: criminoso?.nomeCompleto || '',
-    cpf: criminoso?.cpf || '',
-    status: criminoso?.status || 'Pendente',
+    cpf: criminoso?.cpf?.replace(/\D/g, '') || '',
+    status: isAdmin ? criminoso?.status || 'Pendente' : criminoso?.status?? 'Pendente',
+    situacaoPena: criminoso?.situacaoPena || 'Desconhecido',
     antecedentes: criminoso?.antecedentes || [],
+    endereco: criminoso?.endereco || '',
   })
-
+  
   const [loading, setLoading] = useState(false)
+
+
+  useEffect(() => {
+    setFormData({
+      nomeCompleto: criminoso?.nomeCompleto || '',
+      cpf: criminoso?.cpf?.replace(/\D/g, '') || '',
+      status: isAdmin ? criminoso?.status || 'Pendente' : criminoso?.status??'Pendente',
+      situacaoPena: criminoso?.situacaoPena || 'Desconecido',
+      antecedentes: criminoso?.antecedentes || [],
+      endereco: criminoso?.endereco || '',
+    })
+  }, [criminoso, isAdmin])
+
+  
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -92,6 +109,28 @@ export function CriminosoForm({ criminoso, onSuccess }: CriminosoFormProps) {
       </div>
 
       <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Situação da Pena
+        </label>
+        <select
+          value={formData.situacaoPena}
+          onChange={(e) =>
+            setFormData({ ...formData, situacaoPena: e.target.value })
+          }
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        >
+          <option value="Desconhecido">Desconhecido</option>
+          <option value="EmLiberdadecondicional">Em Liberdade Condicional</option>
+          <option value="Foragido">Foragido</option>
+          <option value="CumprindoPena">Cumprindo Pena</option>
+          <option value="EmRegimeSemiAberto">Em Regime Semi-Aberto</option>
+          <option value="EmRegimeFechado">Em Regime Fechado</option>
+          <option value="Solto">Solto</option>
+        </select>
+
+      </div>
+
+      <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
           Antecedentes
         </label>
@@ -120,6 +159,20 @@ export function CriminosoForm({ criminoso, onSuccess }: CriminosoFormProps) {
             </label>
           ))}
         </div>
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">
+          Endereço
+        </label>
+        <input type="text"
+          value={formData.endereco}
+          onChange={(e) =>
+            setFormData({ ...formData, endereco: e.target.value })
+          }
+          required
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
       </div>
 
       <button

@@ -60,6 +60,7 @@ export default function AdminPage() {
             <div className="lg:col-span-1">
               <CriminosoForm
                 criminoso={editingCriminoso}
+                isAdmin={true}
                 onSuccess={handleSuccess}
               />
             </div>

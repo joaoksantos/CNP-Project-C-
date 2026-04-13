@@ -1,5 +1,6 @@
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -120,6 +121,14 @@ public class CriminosoController : ControllerBase
     [HttpPost]
     public IActionResult Incluir(Criminoso criminoso)
     {
+        var usuarioID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        criminoso.CriadoPorUsuarioId = usuarioID;
+
+        if (!User.IsInRole("Admin"))
+        {
+            criminoso.Status = EnumStatusCriminoso.Pendente;
+        }
+        
         var cpfFormatado = CpfFormatter.Formatar(criminoso.Cpf);
 
         if (criminoso.NomeCompleto == null)
@@ -128,6 +137,8 @@ public class CriminosoController : ControllerBase
             return BadRequest(new { Erro = "Campo CPF não pode ser vazio" });
         if (criminoso.Antecedentes == null)
             return BadRequest(new { Erro = "Campo Antecedentes não pode ser vazio" });
+        if (criminoso.Endereco == null)
+            return BadRequest(new { Erro = "Campo Endereço não pode ser vazio" });
 
         _contexto.Criminosos.Add(criminoso);
         _contexto.SaveChanges();
@@ -145,9 +156,10 @@ public class CriminosoController : ControllerBase
             return NotFound();
 
         criminosoBanco.NomeCompleto = criminoso.NomeCompleto;
-        criminosoBanco.Cpf = criminoso.Cpf;
+        criminosoBanco.Cpf = CpfFormatter.Normalizar(criminoso.Cpf);
         criminosoBanco.Status = criminoso.Status;
         criminosoBanco.Antecedentes = criminoso.Antecedentes;
+        criminosoBanco.Endereco = criminoso.Endereco;
 
 
         //_contexto.Criminosos.Update(criminoso);
@@ -169,6 +181,21 @@ public class CriminosoController : ControllerBase
         _contexto.SaveChanges();
 
         return NoContent();
+    }
+
+    [HttpPatch("{id}/status")]
+    public IActionResult AtualizarStatus(int id, EnumStatusCriminoso status)
+    {
+        
+        var criminosoBanco = _contexto.Criminosos.Find(id);
+
+        if (criminosoBanco == null)
+            return NotFound();
+
+        criminosoBanco.Status = status;
+        _contexto.SaveChanges();
+
+        return Ok("Status atualizado com sucesso!");
     }
 
 }
