@@ -82,6 +82,11 @@ export const criminosoService = {
     const response = await api.delete(`/Criminoso/${id}`)
     return response.data
   },
+
+  atualizarStatus: async (id: number, status: string) => {
+    const response = await api.patch(`/Criminoso/${id}/status`, { status })
+    return response.data
+  }
 }
 
 export default api

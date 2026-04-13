@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import { Criminoso } from '@/types'
 import { criminosoService } from '@/services/api'
 import { Trash2, Edit, Eye } from 'lucide-react'
+import { maskCpf } from '@/utils/maskCpf'
 
 interface CriminosoTableProps {
   onEdit?: (criminoso: Criminoso) => void
@@ -69,7 +70,9 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
               <th className="px-4 py-3 text-left text-sm font-semibold">Nome</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">CPF</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Status</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold">Situação da Pena</th>
               <th className="px-4 py-3 text-left text-sm font-semibold">Antecedentes</th>
+              <th className="px-4 py-3 text-left text-sm font-semibold">Endereço</th>
               <th className="px-4 py-3 text-center text-sm font-semibold">Ações</th>
             </tr>
           </thead>
@@ -80,7 +83,7 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
                 className="border-b hover:bg-gray-50 transition"
               >
                 <td className="px-4 py-3 text-sm">{criminoso.nomeCompleto}</td>
-                <td className="px-4 py-3 text-sm font-mono">{criminoso.cpf}</td>
+                <td className="px-4 py-3 text-sm font-mono">{isAdmin ? criminoso.cpf : maskCpf(criminoso.cpf)}</td>
                 <td className="px-4 py-3 text-sm">
                   <span
                     className={`px-2 py-1 rounded text-xs font-semibold ${
@@ -94,6 +97,13 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
                     {criminoso.status}
                   </span>
                 </td>
+                
+                <td className="px-4 py-3 text-sm">
+                  <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs">
+                    {criminoso.situacaoPena}
+                  </span>
+                </td>
+
                 <td className="px-4 py-3 text-sm">
                   <div className="flex gap-1 flex-wrap">
                     {criminoso.antecedentes.map((ant, i) => (
@@ -106,6 +116,7 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
                     ))}
                   </div>
                 </td>
+                <td className="px-4 py-3 text-sm">{criminoso.endereco}</td>
                 <td className="px-4 py-3 text-sm flex justify-center gap-2">
                   <button className="p-1 hover:bg-blue-100 rounded transition">
                     <Eye size={18} className="text-blue-600" />

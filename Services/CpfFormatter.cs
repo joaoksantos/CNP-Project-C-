@@ -14,4 +14,12 @@ public static class CpfFormatter
             
         return Convert.ToUInt64(cpf).ToString(@"000\.000\.000\-00");
     }
+
+    public static string Normalizar(string cpf)
+    {
+        if (string.IsNullOrEmpty(cpf))
+            return string.Empty;
+
+        return new string(cpf.Where(char.IsDigit).ToArray());
+    }
 }
