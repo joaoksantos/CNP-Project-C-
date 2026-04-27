@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PROJETOCNP.Context;
 
@@ -11,9 +12,11 @@ using PROJETOCNP.Context;
 namespace ProjetoCNP.Migrations
 {
     [DbContext(typeof(OrganizadorContext))]
-    partial class OrganizadorContextModelSnapshot : ModelSnapshot
+    [Migration("20260427205737_TryToFix")]
+    partial class TryToFix
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

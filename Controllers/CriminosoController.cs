@@ -121,19 +121,17 @@ public class CriminosoController : ControllerBase
     [HttpPost]
     public IActionResult Incluir(Criminoso criminoso)
     {
-        var usuarioID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        criminoso.CriadoPorUsuarioId = usuarioID;
 
         if (!User.IsInRole("Admin"))
         {
             criminoso.Status = EnumStatusCriminoso.Pendente;
         }
-        
+
         var cpfFormatado = CpfFormatter.Formatar(criminoso.Cpf);
 
         if (criminoso.NomeCompleto == null)
             return BadRequest(new { Erro = "Campo Nome Completo não pode ser vazio" });
-        if (cpfFormatado.Equals(Empty))
+        if (cpfFormatado.Equals(string.Empty))
             return BadRequest(new { Erro = "Campo CPF não pode ser vazio" });
         if (criminoso.Antecedentes == null)
             return BadRequest(new { Erro = "Campo Antecedentes não pode ser vazio" });
@@ -158,6 +156,7 @@ public class CriminosoController : ControllerBase
         criminosoBanco.NomeCompleto = criminoso.NomeCompleto;
         criminosoBanco.Cpf = CpfFormatter.Normalizar(criminoso.Cpf);
         criminosoBanco.Status = criminoso.Status;
+        criminosoBanco.SituacaoPena = criminoso.SituacaoPena;
         criminosoBanco.Antecedentes = criminoso.Antecedentes;
         criminosoBanco.Endereco = criminoso.Endereco;
 

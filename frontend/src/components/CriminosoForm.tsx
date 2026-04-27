@@ -27,8 +27,8 @@ export function CriminosoForm({ criminoso, isAdmin, onSuccess }: CriminosoFormPr
     setFormData({
       nomeCompleto: criminoso?.nomeCompleto || '',
       cpf: criminoso?.cpf?.replace(/\D/g, '') || '',
-      status: isAdmin ? criminoso?.status || 'Pendente' : criminoso?.status??'Pendente',
-      situacaoPena: criminoso?.situacaoPena || 'Desconecido',
+      status: isAdmin ? criminoso?.status || 'Pendente' : criminoso?.status ?? 'Pendente',
+      situacaoPena: criminoso?.situacaoPena || 'Desconhecido',
       antecedentes: criminoso?.antecedentes || [],
       endereco: criminoso?.endereco || '',
     })

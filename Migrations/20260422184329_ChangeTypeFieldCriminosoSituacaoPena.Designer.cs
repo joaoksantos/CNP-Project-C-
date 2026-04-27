@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PROJETOCNP.Context;
 
@@ -11,9 +12,11 @@ using PROJETOCNP.Context;
 namespace ProjetoCNP.Migrations
 {
     [DbContext(typeof(OrganizadorContext))]
-    partial class OrganizadorContextModelSnapshot : ModelSnapshot
+    [Migration("20260422184329_ChangeTypeFieldCriminosoSituacaoPena")]
+    partial class ChangeTypeFieldCriminosoSituacaoPena
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -39,6 +42,9 @@ namespace ProjetoCNP.Migrations
                         .HasMaxLength(11)
                         .HasColumnType("varchar(11)");
 
+                    b.Property<int>("CriadoPorUsuarioId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Endereco")
                         .IsRequired()
                         .HasColumnType("longtext");
@@ -56,6 +62,8 @@ namespace ProjetoCNP.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CriadoPorUsuarioId");
 
                     b.ToTable("Criminosos");
                 });
@@ -89,6 +97,17 @@ namespace ProjetoCNP.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Usuarios");
+                });
+
+            modelBuilder.Entity("PROJETOCNP.Models.Criminoso", b =>
+                {
+                    b.HasOne("PROJETOCNP.Models.Usuario", "CriadoPorUsuario")
+                        .WithMany()
+                        .HasForeignKey("CriadoPorUsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("CriadoPorUsuario");
                 });
 #pragma warning restore 612, 618
         }
