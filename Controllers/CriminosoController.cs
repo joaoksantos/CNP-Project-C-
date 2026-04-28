@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PROJETOCNP.Context;
 using PROJETOCNP.Models;
 using PROJETOCNP.Services;
+using PROJETOCNP.DTOs;
 
 namespace PROJETOCNP.Controllers;
 
@@ -183,7 +184,7 @@ public class CriminosoController : ControllerBase
     }
 
     [HttpPatch("{id}/status")]
-    public IActionResult AtualizarStatus(int id,[FromBody] EnumStatusCriminoso status)
+    public IActionResult AtualizarStatus(int id,[FromBody] AtualizarStatusCriminosoDto dto)
     {
         
         var criminosoBanco = _contexto.Criminosos.Find(id);
@@ -191,14 +192,7 @@ public class CriminosoController : ControllerBase
         if (criminosoBanco == null)
             return NotFound();
 
-        if (status == EnumStatusCriminoso.Recusado)
-        {
-            criminosoBanco.Status = EnumStatusCriminoso.Recusado;
-        }
-        else if (status == EnumStatusCriminoso.Aprovado)
-        {
-            criminosoBanco.Status = EnumStatusCriminoso.Aprovado;
-        }
+        criminosoBanco.Status = dto.Status;
         
         _contexto.SaveChanges();
 
