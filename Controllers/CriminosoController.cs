@@ -183,7 +183,7 @@ public class CriminosoController : ControllerBase
     }
 
     [HttpPatch("{id}/status")]
-    public IActionResult AtualizarStatus(int id, EnumStatusCriminoso status)
+    public IActionResult AtualizarStatus(int id,[FromBody] EnumStatusCriminoso status)
     {
         
         var criminosoBanco = _contexto.Criminosos.Find(id);
@@ -191,7 +191,15 @@ public class CriminosoController : ControllerBase
         if (criminosoBanco == null)
             return NotFound();
 
-        criminosoBanco.Status = status;
+        if (status == EnumStatusCriminoso.Recusado)
+        {
+            criminosoBanco.Status = EnumStatusCriminoso.Recusado;
+        }
+        else if (status == EnumStatusCriminoso.Aprovado)
+        {
+            criminosoBanco.Status = EnumStatusCriminoso.Aprovado;
+        }
+        
         _contexto.SaveChanges();
 
         return Ok("Status atualizado com sucesso!");
