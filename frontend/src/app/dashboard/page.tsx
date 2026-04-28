@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/services/auth-context'
 import { Header } from '@/components/Header'
 import { CriminosoTable } from '@/components/CriminosoTable'
-import { Users, Shield, CheckCircle, ShieldAlert, ShieldBan } from 'lucide-react'
+import { Users, Shield, CheckCircle, ShieldAlert, ShieldBan, ShieldCheck } from 'lucide-react'
 import { criminosoService } from '@/services/api'
 import { Criminoso } from '@/types'
 
@@ -54,7 +54,7 @@ export default function DashboardPage() {
 
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-100 rounded-lg">
@@ -63,6 +63,18 @@ export default function DashboardPage() {
               <div>
                 <p className="text-gray-600 text-sm">Total de Registros</p>
                 <p className="text-2xl font-bold">{total}</p>
+              </div>
+            </div>
+          </div>
+          {/*Campo teste*/}
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center gap-4">
+              <div className="p-3 bg-green-100 rounded-lg">
+                <ShieldCheck size={24} className="text-green-600" />
+              </div>
+              <div>
+                <p className="text-gray-600 text-sm">Aprovados</p>
+                <p className="text-2xl font-bold">{aprovados}</p>
               </div>
             </div>
           </div>
