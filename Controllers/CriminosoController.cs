@@ -121,19 +121,17 @@ public class CriminosoController : ControllerBase
     [HttpPost]
     public IActionResult Incluir(Criminoso criminoso)
     {
-        var usuarioID = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        criminoso.CriadoPorUsuarioId = usuarioID;
 
         if (!User.IsInRole("Admin"))
         {
             criminoso.Status = EnumStatusCriminoso.Pendente;
         }
-        
+
         var cpfFormatado = CpfFormatter.Formatar(criminoso.Cpf);
 
         if (criminoso.NomeCompleto == null)
             return BadRequest(new { Erro = "Campo Nome Completo não pode ser vazio" });
-        if (cpfFormatado.Equals(Empty))
+        if (cpfFormatado.Equals(string.Empty))
             return BadRequest(new { Erro = "Campo CPF não pode ser vazio" });
         if (criminoso.Antecedentes == null)
             return BadRequest(new { Erro = "Campo Antecedentes não pode ser vazio" });
@@ -158,6 +156,7 @@ public class CriminosoController : ControllerBase
         criminosoBanco.NomeCompleto = criminoso.NomeCompleto;
         criminosoBanco.Cpf = CpfFormatter.Normalizar(criminoso.Cpf);
         criminosoBanco.Status = criminoso.Status;
+        criminosoBanco.SituacaoPena = criminoso.SituacaoPena;
         criminosoBanco.Antecedentes = criminoso.Antecedentes;
         criminosoBanco.Endereco = criminoso.Endereco;
 
@@ -184,7 +183,7 @@ public class CriminosoController : ControllerBase
     }
 
     [HttpPatch("{id}/status")]
-    public IActionResult AtualizarStatus(int id, EnumStatusCriminoso status)
+    public IActionResult AtualizarStatus(int id,[FromBody] EnumStatusCriminoso status)
     {
         
         var criminosoBanco = _contexto.Criminosos.Find(id);
@@ -192,7 +191,15 @@ public class CriminosoController : ControllerBase
         if (criminosoBanco == null)
             return NotFound();
 
-        criminosoBanco.Status = status;
+        if (status == EnumStatusCriminoso.Recusado)
+        {
+            criminosoBanco.Status = EnumStatusCriminoso.Recusado;
+        }
+        else if (status == EnumStatusCriminoso.Aprovado)
+        {
+            criminosoBanco.Status = EnumStatusCriminoso.Aprovado;
+        }
+        
         _contexto.SaveChanges();
 
         return Ok("Status atualizado com sucesso!");

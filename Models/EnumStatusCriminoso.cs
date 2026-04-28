@@ -2,8 +2,8 @@ namespace PROJETOCNP.Models;
 
 public enum EnumStatusCriminoso
 {
-    Aprovado,
-    Recusado,
-    Pendente
+    Recusado = 0,
+    Aprovado = 1,
+    Pendente = 2
 
 }

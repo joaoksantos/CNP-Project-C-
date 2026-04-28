@@ -7,10 +7,6 @@ public class Criminoso
     [Key]
     public int Id { get; set; }
 
-    public int CriadoPorUsuarioId { get; set; }
-
-    public Usuario? CriadoPorUsuario { get; set; }
-
     [Required]
     [MaxLength(255)]
     public string NomeCompleto { get; set; } = default!;
@@ -22,8 +18,7 @@ public class Criminoso
     [Required]
     public EnumStatusCriminoso Status { get; set; }
 
-    
-    public EnumSituacaoPena SituacaoPena { get; set; }
+    public EnumSituacaoPena SituacaoPena { get; set; } = default!;
 
     [Required]
     public List<string> Antecedentes { get; set; } = default!;

@@ -41,3 +41,9 @@ docker-compose.override.yml
 # Logs
 logs/
 *.log
+
+bin/
+obj/
+*.user
+*.suo
+.vs/

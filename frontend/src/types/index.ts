@@ -1,5 +1,6 @@
 export interface Criminoso {
   id: number
+  criadoPorUsuarioId: number
   nomeCompleto: string
   cpf: string
   status: 'Aprovado' | 'Recusado' | 'Pendente'
@@ -27,12 +28,3 @@ export interface Usuario {
   ativo: boolean
 }
 
-//Teste de enum para situação da pena
-export type SituacaoPena =
-  | 'Desconhecido'
-  | 'EmLiberdadecondicional'
-  | 'Foragido'
-  | 'CumprindoPena'
-  | 'EmRegimeSemiAberto'
-  | 'EmRegimeFechado'
-  | 'Solto'

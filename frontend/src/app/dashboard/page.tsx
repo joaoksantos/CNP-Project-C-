@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 import { useAuth } from '@/services/auth-context'
 import { Header } from '@/components/Header'
 import { CriminosoTable } from '@/components/CriminosoTable'
-import { Users, Shield, CheckCircle } from 'lucide-react'
+import { Users, Shield, CheckCircle, ShieldAlert, ShieldBan } from 'lucide-react'
 import { criminosoService } from '@/services/api'
 import { Criminoso } from '@/types'
 
@@ -38,6 +38,7 @@ export default function DashboardPage() {
   const total = criminosos.length
   const aprovados = criminosos.filter(c => c.status === 'Aprovado').length
   const pendentes = criminosos.filter(c => c.status === 'Pendente').length
+  const recusados = criminosos.filter(c => c.status === 'Recusado').length
 
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Carregando...</div>
@@ -68,24 +69,24 @@ export default function DashboardPage() {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <CheckCircle size={24} className="text-green-600" />
+              <div className="p-3 bg-orange-100 rounded-lg">
+                <ShieldAlert size={24} className="text-orange-600" />
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Aprovados</p>
-                <p className="text-2xl font-bold">{aprovados}</p>
+                <p className="text-gray-600 text-sm">Pendentes</p>
+                <p className="text-2xl font-bold">{pendentes}</p>
               </div>
             </div>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center gap-4">
-              <div className="p-3 bg-orange-100 rounded-lg">
-                <Shield size={24} className="text-orange-600" />
+              <div className="p-3 bg-red-100 rounded-lg">
+                <ShieldBan size={24} className="text-orange-600" />
               </div>
               <div>
-                <p className="text-gray-600 text-sm">Pendentes</p>
-                <p className="text-2xl font-bold">{pendentes}</p>
+                <p className="text-gray-600 text-sm">Recusados</p>
+                <p className="text-2xl font-bold">{recusados}</p>
               </div>
             </div>
           </div>

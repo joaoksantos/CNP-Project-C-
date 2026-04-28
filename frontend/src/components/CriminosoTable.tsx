@@ -44,6 +44,16 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
     }
   }
 
+  const handleStatusChange = async (id: number, status: 'Aprovado' | 'Recusado') => {
+    if (!confirm(`Deseja ${status.toLowerCase()} este registro`)) return;
+    try {
+      await criminosoService.atualizarStatus(id, status)
+      carregarCriminosos()
+    }catch (error) {
+      alert('Erro ao atualizar staus')
+    }
+  }
+
   const dataFiltrada = criminosos.filter((c) =>
     c.nomeCompleto.toLowerCase().includes(filtro.toLowerCase()) ||
     c.cpf.includes(filtro)
@@ -85,17 +95,32 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
                 <td className="px-4 py-3 text-sm">{criminoso.nomeCompleto}</td>
                 <td className="px-4 py-3 text-sm font-mono">{isAdmin ? criminoso.cpf : maskCpf(criminoso.cpf)}</td>
                 <td className="px-4 py-3 text-sm">
-                  <span
-                    className={`px-2 py-1 rounded text-xs font-semibold ${
+                 {isAdmin && criminoso.status === 'Pendente' ? (
+                    <div className="flex gap-2">
+                      <button
+                        onClick={() => handleStatusChange(criminoso.id, 'Aprovado')}
+                        className="px-2 py-1 bg-green-100 text-green-800 rounded text-xs"
+                      >
+                        Aprovar
+                      </button>
+                      <button
+                        onClick={() => handleStatusChange(criminoso.id, 'Recusado')}
+                        className="px-2 py-1 bg-red-100 text-red-800 rounded text-xs"
+                      >
+                        Recusar
+                      </button>
+                    </div>
+                  ) : (
+                    <span className={`px-2 py-1 rounded text-xs font-semibold ${
                       criminoso.status === 'Aprovado'
                         ? 'bg-green-100 text-green-800'
                         : criminoso.status === 'Recusado'
                         ? 'bg-red-100 text-red-800'
                         : 'bg-yellow-100 text-yellow-800'
-                    }`}
-                  >
-                    {criminoso.status}
-                  </span>
+                    }`}>
+                      {criminoso.status}
+                    </span>
+                  )}
                 </td>
                 
                 <td className="px-4 py-3 text-sm">
