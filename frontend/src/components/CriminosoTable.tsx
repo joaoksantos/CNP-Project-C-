@@ -7,12 +7,14 @@ import { Trash2, Edit, Eye } from 'lucide-react'
 import { maskCpf } from '@/utils/maskCpf'
 
 interface CriminosoTableProps {
+  criminoso: Criminoso[]
+  filtroStatus?: string | null
   onEdit?: (criminoso: Criminoso) => void
   onDelete?: (id: number) => void
   isAdmin?: boolean
 }
 
-export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProps) {
+export function CriminosoTable({ criminoso, filtroStatus, onEdit, onDelete, isAdmin }: CriminosoTableProps) {
   const [criminosos, setCriminosos] = useState<Criminoso[]>([])
   const [loading, setLoading] = useState(true)
   const [filtro, setFiltro] = useState('')
@@ -57,6 +59,9 @@ export function CriminosoTable({ onEdit, onDelete, isAdmin }: CriminosoTableProp
   const dataFiltrada = criminosos.filter((c) =>
     c.nomeCompleto.toLowerCase().includes(filtro.toLowerCase()) ||
     c.cpf.includes(filtro)
+  )
+  .filter((c) =>
+    filtroStatus ? c.status === filtroStatus : true
   )
 
   if (loading) {

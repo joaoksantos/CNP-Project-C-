@@ -14,6 +14,7 @@ export default function DashboardPage() {
   const router = useRouter()
   const [criminosos, setCriminosos] = useState<Criminoso[]>([])
   const [loadingData, setLoadingData] = useState(true)
+  const [filtroStatus, setFiltroStatus] = useState<string | null>(null)
 
   useEffect(() => {
     if (!loading && !isAuthenticated) {
@@ -55,7 +56,8 @@ export default function DashboardPage() {
       <main className="max-w-7xl mx-auto px-4 py-8">
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition"
+          onClick={() => setFiltroStatus(null)}>
             <div className="flex items-center gap-4">
               <div className="p-3 bg-blue-100 rounded-lg">
                 <Users size={24} className="text-blue-600" />
@@ -66,8 +68,9 @@ export default function DashboardPage() {
               </div>
             </div>
           </div>
-          {/*Campo teste*/}
-          <div className="bg-white rounded-lg shadow p-6">
+          {/*Campo adicionado manualmente*/}
+          <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition"
+          onClick={()=>setFiltroStatus("Aprovado")}>
             <div className="flex items-center gap-4">
               <div className="p-3 bg-green-100 rounded-lg">
                 <ShieldCheck size={24} className="text-green-600" />
@@ -79,7 +82,9 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition"
+          onClick={()=> setFiltroStatus('Pendente')}
+            >
             <div className="flex items-center gap-4">
               <div className="p-3 bg-orange-100 rounded-lg">
                 <ShieldAlert size={24} className="text-orange-600" />
@@ -91,7 +96,8 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 cursor-pointer hover:shadow-lg transition"
+          onClick={()=> setFiltroStatus('Recusado')}>
             <div className="flex items-center gap-4">
               <div className="p-3 bg-red-100 rounded-lg">
                 <ShieldBan size={24} className="text-orange-600" />
@@ -107,7 +113,7 @@ export default function DashboardPage() {
         {/* Table */}
         <div className="bg-white rounded-lg shadow p-6">
           <h2 className="text-xl font-bold mb-4">Registros de Criminosos</h2>
-          <CriminosoTable />
+          <CriminosoTable criminoso={criminosos} filtroStatus={filtroStatus}/>
         </div>
       </main>
     </div>
