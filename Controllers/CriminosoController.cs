@@ -120,6 +120,7 @@ public class CriminosoController : ControllerBase
 
     
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public IActionResult Incluir(Criminoso criminoso)
     {
 
@@ -147,6 +148,7 @@ public class CriminosoController : ControllerBase
 
     
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Atualizar(int id, Criminoso criminoso)
     {
         var criminosoBanco = _contexto.Criminosos.Find(id);
@@ -170,6 +172,7 @@ public class CriminosoController : ControllerBase
 
     
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Deletar(int id)
     {
         var criminosoBanco = _contexto.Criminosos.Find(id);
@@ -184,6 +187,7 @@ public class CriminosoController : ControllerBase
     }
 
     [HttpPatch("{id}/status")]
+    [Authorize(Roles = "Admin")]
     public IActionResult AtualizarStatus(int id,[FromBody] AtualizarStatusCriminosoDto dto)
     {
         

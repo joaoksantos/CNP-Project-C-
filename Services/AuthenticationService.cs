@@ -29,16 +29,10 @@ public class AuthenticationService
             return (false, "Usuário inativo.", string.Empty,string.Empty);
         }
 
-        // Nâo faz parte apenas teste
-        if (usuario.SenhaHash == HashSenha(senha))
+        if (!VerificarSenha(senha, usuario.SenhaHash))
         {
             return (false, "Senha incorreta.", string.Empty,string.Empty);
         }
-
-        // if (!VerificarSenha(senha, usuario.SenhaHash))
-        // {
-        //     return (false, "Senha incorreta.", string.Empty);
-        // }
 
         var token = _jwtService.GerarToken(usuario.Id, usuario.Email, usuario.Role);
         return (true, "Login realizado com sucesso.", token, usuario.Role);
@@ -73,10 +67,10 @@ public class AuthenticationService
         }
     }
 
-    // public static bool VerificarSenha(string senha, string senhaHash)
-    // {
-    //     var hashSenha = System.Convert.ToBase64String(SHA256.Create()
-    //     .ComputeHash(Encoding.UTF8.GetBytes(senha)));
-    //     return hashSenha == senhaHash;
-    // }
+    public static bool VerificarSenha(string senha, string senhaHash)
+    {
+        var hashSenha = System.Convert.ToBase64String(SHA256.Create()
+        .ComputeHash(Encoding.UTF8.GetBytes(senha)));
+        return hashSenha == senhaHash;
+    }
 }
