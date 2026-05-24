@@ -141,3 +141,5 @@ C:\Users\joaok\Projetos\ProjetoCNP\bin\Debug\net9.0\frontend\package-lock.json
 C:\Users\joaok\Projetos\ProjetoCNP\bin\Debug\net9.0\frontend\package.json
 C:\Users\joaok\Projetos\ProjetoCNP\bin\Debug\net9.0\frontend\tsconfig.json
 C:\Users\joaok\Projetos\ProjetoCNP\obj\Debug\net9.0\ProjetoCNP.sourcelink.json
+C:\Users\joaok\Projetos\ProjetoCNP\bin\Debug\net9.0\AutoMapper.dll
+C:\Users\joaok\Projetos\ProjetoCNP\bin\Debug\net9.0\System.Diagnostics.DiagnosticSource.dll
