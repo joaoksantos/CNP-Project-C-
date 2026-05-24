@@ -21,7 +21,7 @@ public class UsuarioController : ControllerBase
         _contexto = contexto;
     }
 
-    
+    [Authorize(Roles = "Admin")]
     [HttpGet("ObterTodos")]
     public IActionResult ObterTodos()
     {

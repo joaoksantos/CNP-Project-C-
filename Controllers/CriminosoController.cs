@@ -9,6 +9,8 @@ using PROJETOCNP.Context;
 using PROJETOCNP.Models;
 using PROJETOCNP.Services;
 using PROJETOCNP.DTOs;
+using PROJETOCNP.Mappings;
+using AutoMapper;
 
 namespace PROJETOCNP.Controllers;
 
@@ -18,8 +20,11 @@ public class CriminosoController : ControllerBase
 {
     private readonly OrganizadorContext _contexto;
 
-    public CriminosoController(OrganizadorContext contexto)
+    private readonly IMapper _mapper;
+
+    public CriminosoController(IMapper mapper, OrganizadorContext contexto)
     {
+        _mapper = mapper;
         _contexto = contexto;
     }
 
@@ -28,12 +33,14 @@ public class CriminosoController : ControllerBase
     {
         var criminoso = _contexto.Criminosos.Find(id);
 
+        var dto = _mapper.Map<CriminosoGetDto>(criminoso);
+
         if (criminoso == null)
             return NotFound();
 
         criminoso.Cpf = CpfFormatter.Formatar(criminoso.Cpf);
 
-        return Ok(criminoso);
+        return Ok(dto);
     }
 
 
@@ -42,12 +49,14 @@ public class CriminosoController : ControllerBase
     {
         var criminoso = _contexto.Criminosos.ToList();
 
-        foreach (var i in criminoso)
+        var dtos = _mapper.Map<List<Criminoso>, List<CriminosoGetDto>>(criminoso);
+
+        foreach (var i in dtos)
         {
             i.Cpf = CpfFormatter.Formatar(i.Cpf);
         }
 
-        return Ok(criminoso);
+        return Ok(dtos);
     }
 
     
@@ -120,8 +129,10 @@ public class CriminosoController : ControllerBase
 
     
     [HttpPost]
-    public IActionResult Incluir(Criminoso criminoso)
+    [Authorize(Roles = "Admin")]
+    public IActionResult Incluir(CriminosoCreateDto criminosoDto)
     {
+        var criminoso = _mapper.Map<Criminoso>(criminosoDto);
 
         if (!User.IsInRole("Admin"))
         {
@@ -147,9 +158,12 @@ public class CriminosoController : ControllerBase
 
     
     [HttpPut("{id}")]
-    public IActionResult Atualizar(int id, Criminoso criminoso)
+    [Authorize(Roles = "Admin")]
+    public IActionResult Atualizar(int id, CriminosoUpdateDto criminosoDto)
     {
         var criminosoBanco = _contexto.Criminosos.Find(id);
+
+        var criminoso = _mapper.Map<Criminoso>(criminosoDto);
 
         if (criminosoBanco == null)
             return NotFound();
@@ -170,6 +184,7 @@ public class CriminosoController : ControllerBase
 
     
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public IActionResult Deletar(int id)
     {
         var criminosoBanco = _contexto.Criminosos.Find(id);
@@ -184,6 +199,7 @@ public class CriminosoController : ControllerBase
     }
 
     [HttpPatch("{id}/status")]
+    [Authorize(Roles = "Admin")]
     public IActionResult AtualizarStatus(int id,[FromBody] AtualizarStatusCriminosoDto dto)
     {
         

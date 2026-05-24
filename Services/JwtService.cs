@@ -16,7 +16,7 @@ public class JwtService
     {
         _secretKey = configuration["Jwt:SecretKey"] ?? throw new ArgumentNullException("Jwt:SecretKey");
         _emissor = configuration["Jwt:Emissor"] ?? "ProjetoCNP";
-        _audiencia = configuration["Jwt:Audiencia"] ?? "ProjetoCNP";
+        _audiencia = configuration["Jwt:Audiencia"] ?? "ProjetoCNPUsers";
         _expiracaoMinutos = int.Parse(configuration["Jwt:ExpiracaoMinutos"] ?? "60");
     }
 
