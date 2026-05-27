@@ -8,6 +8,7 @@ using PROJETOCNP.Context;
 using PROJETOCNP.Services;
 using PROJETOCNP.Mappings;
 
+
 var builder = WebApplication.CreateBuilder(args);
 
 var conexao = builder.Configuration.GetConnectionString("MinhaConexao");
@@ -110,5 +111,18 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<OrganizadorContext>();
+    dbContext.Database.Migrate();
+
+    var authService = scope.ServiceProvider.GetRequiredService<AuthenticationService>();
+
+    if (!dbContext.Usuarios.Any())
+    {
+        authService.CriarUsuario("user@cnp.com", "admin@123", "Usuario");
+    }
+}
 
 app.Run();
