@@ -3,10 +3,10 @@ namespace PROJETOCNP.Models;
 public enum EnumSituacaoPena
 {
     Desconhecido,
-    EmLiberdadecondicional,
+    Liberdadecondicional,
     Foragido,
     CumprindoPena,
-    EmRegimeSemiAberto,
-    EmRegimeFechado,
+    RegimeSemiAberto,
+    RegimeFechado,
     Solto
 }
