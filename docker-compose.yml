@@ -2,8 +2,9 @@ version: '3.8'
 
 services:
   mysql:
-    image: mysql:8.0
+    image: mariadb:11
     container_name: projetocnp_mysql
+    restart: unless-stopped
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       MYSQL_DATABASE: ${MYSQL_DATABASE}
@@ -11,6 +12,10 @@ services:
       - "${MYSQL_PORT}:3306"
     volumes:
       - mysql_data:/var/lib/mysql
+    command: >
+      --innobd_buffer_pool_size=64M
+      --max_connections=20
+      --performance_schema=OFF
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
       interval: 10s
@@ -33,18 +38,18 @@ services:
       - ConnectionStrings__MinhaConexao=${ConnectionStrings__MinhaConexao}
     restart: unless-stopped
 
-  frontend:
-    build:
-      context: ./frontend
-      dockerfile: Dockerfile
-    container_name: projetocnp_frontend
-    ports:
-      - "${FRONTEND_PORT}:3000"
-    depends_on:
-      - backend
-    environment:
-      - NEXT_PUBLIC_API_URL= ${NEXT_PUBLIC_API_URL}
-    restart: unless-stopped
+  # frontend:
+  #   build:
+  #     context: ./frontend
+  #     dockerfile: Dockerfile
+  #   container_name: projetocnp_frontend
+  #   ports:
+  #     - "${FRONTEND_PORT}:3000"
+  #   depends_on:
+  #     - backend
+  #   environment:
+  #     - NEXT_PUBLIC_API_URL= ${NEXT_PUBLIC_API_URL}
+  #   restart: unless-stopped
 
 volumes:
   mysql_data:
