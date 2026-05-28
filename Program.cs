@@ -12,6 +12,7 @@ using PROJETOCNP.Mappings;
 var builder = WebApplication.CreateBuilder(args);
 
 var conexao = builder.Configuration.GetConnectionString("MinhaConexao");
+
 builder.Services.AddDbContext<OrganizadorContext>(options =>
 {
     options.UseMySql(conexao, ServerVersion.AutoDetect(conexao));
@@ -98,12 +99,9 @@ builder.Services.AddSwaggerGen(options =>
 
 var app = builder.Build();
 
-//app.MapGet("/", () => "Hello World!");
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
+
 
 app.UseCors("AllowFrontend");
 
