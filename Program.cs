@@ -64,7 +64,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowGHPages", policy =>
     {
-        policy.WithOrigins("https://joaoklebecsantos.github.io")
+        policy.WithOrigins("https://joaoksantos.github.io")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
