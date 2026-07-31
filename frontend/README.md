@@ -19,7 +19,7 @@ npm install
 Crie um arquivo `.env.local`:
 
 ```env
-NEXT_PUBLIC_API_URL=http://localhost:5000
+NEXT_PUBLIC_API_URL=https://cnp-project-c-staging.up.railway.app/
 ```
 
 ## Executar em Desenvolvimento
@@ -59,4 +59,4 @@ src/
 ## Credenciais Demo
 
 - Email: `admin@cnp.com`
-- Senha: `admin123`
+- Senha: `admin@123`
