@@ -2,7 +2,7 @@ name: Deploy Frontend to GitHub Pages
 
 on:
   push:
-    branches: ['main'] # ou 'master', dependendo da sua branch principal
+    branches: ['staging'] # ou 'master', dependendo da sua branch principal
 
 permissions:
   contents: read
