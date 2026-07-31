@@ -15,7 +15,9 @@ var conexao = builder.Configuration.GetConnectionString("MinhaConexao");
 
 builder.Services.AddDbContext<OrganizadorContext>(options =>
 {
-    options.UseMySql(conexao, ServerVersion.AutoDetect(conexao));
+    var serverVersion = new MySqlServerVersion(new Version(9, 4, 00));
+    
+    options.UseMySql(conexao, serverVersion);
 });
 
 // Configuração do JWT
@@ -46,7 +48,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<AuthenticationService>();
 
-var key_map = builder.Configuration.GetConnectionMapper("KeyMap")
+var key_map = builder.Configuration.GetConnectionString("KeyMap");
 builder.Services.AddAutoMapper(cfg =>{
     cfg.LicenseKey = key_map;
     cfg.AddProfile(new CriminosoProfile());
@@ -60,9 +62,9 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowGHPages", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins("https://joaoklebecsantos.github.io")
               .AllowAnyMethod()
               .AllowAnyHeader()
               .AllowCredentials();
@@ -104,7 +106,7 @@ app.UseSwagger();
 app.UseSwaggerUI();
 
 
-app.UseCors("AllowFrontend");
+app.UseCors("AllowGHPages");
 
 app.UseAuthentication();
 app.UseAuthorization();
