@@ -2,7 +2,7 @@
 const nextConfig = {
   reactStrictMode: true,
   output: 'export',
-  basePath: 'https://joaoksantos.github.io/CNP-Project-C-/',
+  basePath: '/CNP-Project-C-',
   images: {
     unoptimized: true,
   },
