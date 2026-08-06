@@ -48,7 +48,7 @@ builder.Services.AddAuthorization();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<AuthenticationService>();
 
-var key_map = builder.Configuration.GetConnectionString("KeyMap");
+var key_map = builder.Configuration.GetConnectionMapper("KeyMap");
 builder.Services.AddAutoMapper(cfg =>{
     cfg.LicenseKey = key_map;
     cfg.AddProfile(new CriminosoProfile());
