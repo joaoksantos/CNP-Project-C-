@@ -22,7 +22,7 @@ namespace PROJETOCNP.DTOs
         public EnumSituacaoPena SituacaoPena { get; set; } = default!;
 
         [Required]
-        public EnumAntecedentes Antecedentes { get; set; } = default!;
+        public List<string> Antecedentes { get; set; } = default!;
 
         public string Endereco { get; set; } = default!;
     }
