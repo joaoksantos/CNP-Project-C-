@@ -12,7 +12,7 @@ namespace PROJETOCNP.DTOs
 
         public EnumSituacaoPena SituacaoPena { get; set; }
 
-        public List<string>? Antecedentes { get; set; }
+        public EnumAntecedentes Antecedentes { get; set; }
         
         public string? Endereco { get; set; }
     }
