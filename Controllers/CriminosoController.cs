@@ -64,7 +64,7 @@ public class CriminosoController : ControllerBase
     public async Task<IActionResult> ObterPorNome(string nome)
     {
         if(string.IsNullOrWhiteSpace(nome))
-            return BadRequest(new { Error = "Informe um nome para a pesquisa."});
+            return BadRequest(new { Error = "Informe um nome para a pesquisa"});
         
         var criminoso = await _contexto.Criminosos
         .Where(x => x.NomeCompleto.Contains(nome))
