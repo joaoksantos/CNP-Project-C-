@@ -29,14 +29,14 @@ public class CriminosoController : ControllerBase
     }
 
     [HttpGet("{id}")] // Público
-    public IActionResult ObterPorId(int id)
+    public async Task<IActionResult> ObterPorId(int id)
     {
-        var criminoso = _contexto.Criminosos.Find(id);
-
-        var dto = _mapper.Map<CriminosoGetDto>(criminoso);
+        var criminoso = await _contexto.Criminosos.FindAsync(id);
 
         if (criminoso == null)
             return NotFound();
+
+        var dto = _mapper.Map<CriminosoGetDto>(criminoso);
 
         criminoso.Cpf = CpfFormatter.Formatar(criminoso.Cpf);
 
@@ -45,11 +45,11 @@ public class CriminosoController : ControllerBase
 
 
     [HttpGet("ObterTodos")]
-    public IActionResult ObterTodos()
+    public async Task<IActionResult> ObterTodos()
     {
-        var criminoso = _contexto.Criminosos.ToList();
+        var criminoso = await _contexto.Criminosos.ToListAsync();
 
-        var dtos = _mapper.Map<List<Criminoso>, List<CriminosoGetDto>>(criminoso);
+        var dtos = _mapper.Map<List<CriminosoGetDto>(criminoso);
 
         foreach (var i in dtos)
         {
@@ -61,68 +61,80 @@ public class CriminosoController : ControllerBase
 
     
     [HttpGet("ObterPorNome")] // Em dúvida se deixar público
-    public IActionResult ObterPorNome(string nome)
+    public async Task<IActionResult> ObterPorNome(string nome)
     {
-        var criminoso = _contexto.Criminosos.Where(x => x.NomeCompleto.Contains(nome)).ToList();
+        if(string.IsNullOrWhiteSpace(nome))
+            return BadRequest(new { Error = "Informe um nome para a pesquisa."});
+        
+        var criminoso = await _contexto.Criminosos
+        .Where(x => x.NomeCompleto.Contains(nome))
+        .ToListAsync();
 
-        if (nome == null)
-            return NotFound();
-
+        var dtos = _mapper.Map<List<CriminososGetDto>>(criminosos);
         foreach (var i in criminoso)
         {
             i.Cpf = CpfFormatter.Formatar(i.Cpf);
         }
 
-        return Ok(criminoso);
+        return Ok(dtos);
     }
 
     
     [HttpGet("ObterPorCPF")]
-    public IActionResult ObterPorCPF(string cpf)
+    public async Task<IActionResult> ObterPorCPF(string cpf)
     {
-        if (string.IsNullOrEmpty(cpf))
-            return NotFound();
-
         if (string.IsNullOrWhiteSpace(cpf))
-            throw new Exception("Preencha o valor a ser pesquisado.");
+            return BadRequest(new { Error = "Informe um CPF para a pesquisa."});
 
-        var criminoso = _contexto.Criminosos.FirstOrDefault(c => c.Cpf == cpf);
+        var cpfNormalizado = CpfFormatter.Normalizar(cpf);
+
+        var criminoso = await _contexto.Criminosos
+            .FirstOrDefaultAsync(c => c.Cpf == cpfNormalizado);
 
         if (criminoso == null)
             return NotFound();
 
-        criminoso.Cpf = CpfFormatter.Formatar(criminoso.Cpf);
+        var dto = _mapper.Map<CriminosoGetDto>(criminoso);
 
-        return Ok(criminoso);
+        dto.Cpf = CpfFormatter.Formatar(criminoso.Cpf);
+
+        return Ok(dto);
     }
 
     
     [HttpGet("ObterPorStatus")]
-    public IActionResult ObterPorStatus(EnumStatusCriminoso status)
+    public async Task<IActionResult> ObterPorStatus(EnumStatusCriminoso status)
     {
-        var criminoso = _contexto.Criminosos.Where(x => x.Status == status);
+        var criminoso = await _contexto.Criminosos
+            .Where(x => x.Status == status)
+            .ToListAsync();
         
-         foreach (var i in criminoso)
+        var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);        
+         foreach (var i in dtos)
         {
             i.Cpf = CpfFormatter.Formatar(i.Cpf);
         }
 
-        return Ok(criminoso);
+        return Ok(dtos);
     }
 
     
     [HttpGet("ObterPorAntecedentes")]
-    public IActionResult ObterPorAntecedentes(List<string> antecedentes)
+    public async Task<IActionResult> ObterPorAntecedentes(List<string> antecedentes)
     {
-        //Resolver problema de cast
-        var resultado = _contexto.Criminosos.Where(c => c.Antecedentes.Any(a => antecedentes.Contains(a)));
+        if(antecedentes == null || !antecedentes.Any())
+            return BadRequest(new { Error = "Informe pelo menos um antecedente para a pesquisa."});
+        var criminoso = await _contexto.Criminosos
+            .Where(c => c.Antecedentes.Any(a => antecedentes.Contains(a)))
+            .ToListAsync();
 
-         foreach (var i in resultado)
+        var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
+        foreach (var i in dtos)
         {
             i.Cpf = CpfFormatter.Formatar(i.Cpf);
         }
 
-        return Ok(resultado);
+        return Ok(dtos);
     }
 
     // Verificar como fazer busca de TAGs para os Antecedentes ou uma Lista de Enum que possa ser agrupado mais de uma opção.
@@ -130,7 +142,7 @@ public class CriminosoController : ControllerBase
     
     [HttpPost]
     [Authorize(Roles = "Admin")]
-    public IActionResult Incluir(CriminosoCreateDto criminosoDto)
+    public async Task<IActionResult> Incluir(CriminosoCreateDto criminosoDto)
     {
         var criminoso = _mapper.Map<Criminoso>(criminosoDto);
 
@@ -150,8 +162,8 @@ public class CriminosoController : ControllerBase
         if (criminoso.Endereco == null)
             return BadRequest(new { Erro = "Campo Endereço não pode ser vazio" });
 
-        _contexto.Criminosos.Add(criminoso);
-        _contexto.SaveChanges();
+        await _contexto.Criminosos.AddAsync(criminoso);
+        await _contexto.SaveChangesAsync();
 
         return CreatedAtAction(nameof(ObterPorId), new { id = criminoso.Id }, criminoso);
     }
@@ -159,58 +171,64 @@ public class CriminosoController : ControllerBase
     
     [HttpPut("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult Atualizar(int id, CriminosoUpdateDto criminosoDto)
+    public async Task<IActionResult> Atualizar(int id, CriminosoUpdateDto criminosoDto)
     {
-        var criminosoBanco = _contexto.Criminosos.Find(id);
+        if (criminosoDto == null)
+            return BadRequest(new { Erro = "Payload inválido." });
 
-        var criminoso = _mapper.Map<Criminoso>(criminosoDto);
-
+        var criminosoBanco = await _contexto.Criminosos.FindAsync(id);
         if (criminosoBanco == null)
             return NotFound();
 
-        criminosoBanco.NomeCompleto = criminoso.NomeCompleto;
-        criminosoBanco.Cpf = CpfFormatter.Normalizar(criminoso.Cpf);
-        criminosoBanco.Status = criminoso.Status;
-        criminosoBanco.SituacaoPena = criminoso.SituacaoPena;
-        criminosoBanco.Antecedentes = criminoso.Antecedentes;
-        criminosoBanco.Endereco = criminoso.Endereco;
+        if (!string.IsNullOrWhiteSpace(criminosoDto.NomeCompleto))
+            criminosoBanco.NomeCompleto = criminosoDto.NomeCompleto;
 
+        if (!string.IsNullOrWhiteSpace(criminosoDto.Cpf))
+            criminosoBanco.Cpf = CpfFormatter.Normalizar(criminosoDto.Cpf);
 
-        //_contexto.Criminosos.Update(criminoso);
-        _contexto.SaveChanges();
+        criminosoBanco.Status = criminosoDto.Status;
+        criminosoBanco.SituacaoPena = criminosoDto.SituacaoPena;
 
-        return Ok("Profile atualizado no Sistema com sucesso!");
+        if (criminosoDto.Antecedentes != null && criminosoDto.Antecedentes.Any())
+            criminosoBanco.Antecedentes = criminosoDto.Antecedentes;
+
+        if (!string.IsNullOrWhiteSpace(criminosoDto.Endereco))
+            criminosoBanco.Endereco = criminosoDto.Endereco;
+
+        await _contexto.SaveChangesAsync();
+
+        return Ok(new { Mensagem = "Profile atualizado no sistema com sucesso!" });
     }
 
     
     [HttpDelete("{id}")]
     [Authorize(Roles = "Admin")]
-    public IActionResult Deletar(int id)
+    public async Task<IActionResult> Deletar(int id)
     {
-        var criminosoBanco = _contexto.Criminosos.Find(id);
+        var criminosoBanco = await _contexto.Criminosos.FindAsync(id);
 
         if (criminosoBanco == null)
             return NotFound();
 
         _contexto.Criminosos.Remove(criminosoBanco);
-        _contexto.SaveChanges();
+        await _contexto.SaveChangesAsync();
 
         return NoContent();
     }
 
     [HttpPatch("{id}/status")]
     [Authorize(Roles = "Admin")]
-    public IActionResult AtualizarStatus(int id,[FromBody] AtualizarStatusCriminosoDto dto)
+    public async Task<IActionResult> AtualizarStatus(int id,[FromBody] AtualizarStatusCriminosoDto dto)
     {
         
-        var criminosoBanco = _contexto.Criminosos.Find(id);
+        var criminosoBanco = await _contexto.Criminosos.FindAsync(id);
 
         if (criminosoBanco == null)
             return NotFound();
 
         criminosoBanco.Status = dto.Status;
         
-        _contexto.SaveChanges();
+        await _contexto.SaveChangesAsync();
 
         return Ok("Status atualizado com sucesso!");
     }

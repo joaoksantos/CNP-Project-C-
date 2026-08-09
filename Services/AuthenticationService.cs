@@ -16,10 +16,10 @@ public class AuthenticationService
         _jwtService = jwtService;
     }
 
-    public (bool Success, string Message, string Token, string Role) Login(string email, string senha)
+    public async Task<(bool Success, string Message, string Token, string Role)> Login(string email, string senha)
     {
-        var usuario = _context.Usuarios.FirstOrDefault(u => u.Email == email);
-        //var senha = _context.Usuarios.FirstOrDefault(u => u.Senha == senha);
+        var usuario = await _context.Usuarios.FirstOrDefaultAsync(u => u.Email == email);
+        //var senha = await _context.Usuarios.FirstOrDefaultAsync(u => u.Senha == senha);
         if (usuario == null)
         {
             return (false, "Usuário não encontrado.", string.Empty,string.Empty);
@@ -38,9 +38,9 @@ public class AuthenticationService
         return (true, "Login realizado com sucesso.", token, usuario.Role);
     }
 
-    public bool CriarUsuario(string email, string senha, string role = "Usuario")
+    public async Task<bool> CriarUsuario(string email, string senha, string role = "Usuario")
     {
-        if (_context.Usuarios.Any(u => u.Email == email))
+        if (await _context.Usuarios.AnyAsync(u => u.Email == email))
         {
             return false; // Email já existe
         }
@@ -53,8 +53,8 @@ public class AuthenticationService
             Ativo = true
         };
 
-        _context.Usuarios.Add(usuario);
-        _context.SaveChanges();
+        _context.Usuarios.AddAsync(usuario);
+        await _context.SaveChangesAsync();
         return true;
     }
 

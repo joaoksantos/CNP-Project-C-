@@ -16,14 +16,14 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("login")]
-    public IActionResult Login([FromBody] LoginRequest request)
+    public async Task<IActionResult> Login([FromBody] LoginRequest request)
     {
-        if (string.IsNullOrEmpty(request.Email) || string.IsNullOrEmpty(request.Senha))
+        if (string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Senha))
         {
             return BadRequest(new { mensagem = "Email e senha são obrigatórios." });
         }
 
-        var (sucesso, mensagem, token, role) = _authenticationService.Login(request.Email, request.Senha);
+        var (sucesso, mensagem, token, role) = await _authenticationService.Login(request.Email, request.Senha);
 
         if (!sucesso)
         {
@@ -39,9 +39,13 @@ public class AuthenticationController : ControllerBase
     }
 
     [HttpPost("register")]
-    public IActionResult Registrar([FromBody] LoginRequest request)
+    public async Task<IActionResult> Registrar([FromBody] LoginRequest request)
     {
-        if (_authenticationService.CriarUsuario(request.Email, request.Senha))
+        if(string.IsNullOrWhiteSpace(request.Email) || string.IsNullOrWhiteSpace(request.Senha))
+        {
+            return BadRequest(new { mensagem = "Email e senha são obrigatórios." });
+        }
+        if (await _authenticationService.CriarUsuario(request.Email, request.Senha))
         {
             return Ok(new { mensagem = "Usuário registrado com sucesso." });
         }

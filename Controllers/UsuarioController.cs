@@ -23,9 +23,9 @@ public class UsuarioController : ControllerBase
 
     [Authorize(Roles = "Admin")]
     [HttpGet("ObterTodos")]
-    public IActionResult ObterTodos()
+    public async Task<IActionResult> ObterTodos()
     {
-        var usuarios = _contexto.Usuarios.ToList();
+        var usuarios = await _contexto.Usuarios.ToListAsync();
         return Ok(usuarios);
     }
 }
