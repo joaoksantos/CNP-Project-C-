@@ -6,6 +6,8 @@ namespace PROJETOCNP.DTOs
     {
         public string NomeCompleto { get; set; } = default!;
 
+        public string Cpf { get; set; } = default!;
+
         public EnumStatusCriminoso Status { get; set; }
 
         public EnumSituacaoPena SituacaoPena { get; set; } = default!;
