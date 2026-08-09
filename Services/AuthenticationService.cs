@@ -2,6 +2,7 @@ using PROJETOCNP.Context;
 using PROJETOCNP.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace PROJETOCNP.Services;
 

@@ -49,7 +49,7 @@ public class CriminosoController : ControllerBase
     {
         var criminoso = await _contexto.Criminosos.ToListAsync();
 
-        var dtos = _mapper.Map<List<CriminosoGetDto>(criminoso);
+        var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
 
         foreach (var i in dtos)
         {
@@ -70,8 +70,8 @@ public class CriminosoController : ControllerBase
         .Where(x => x.NomeCompleto.Contains(nome))
         .ToListAsync();
 
-        var dtos = _mapper.Map<List<CriminososGetDto>>(criminosos);
-        foreach (var i in criminoso)
+        var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
+        foreach (var i in dtos)
         {
             i.Cpf = CpfFormatter.Formatar(i.Cpf);
         }
