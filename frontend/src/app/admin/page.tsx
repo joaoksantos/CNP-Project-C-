@@ -40,7 +40,7 @@ export default function AdminPage() {
       }
     }
     carregar()
-  }, [refreshKey])
+  }, [criminosos, refreshKey])
 
   const total = criminosos.length
   const aprovados = criminosos.filter(c => c.status === 'Aprovado').length
