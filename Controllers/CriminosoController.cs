@@ -28,6 +28,21 @@ public class CriminosoController : ControllerBase
         _contexto = contexto;
     }
 
+    private static void FormatarCpfSePossivel(CriminosoGetDto dto)
+    {
+        if (CpfFormatter.TryFormatar(dto.Cpf, out var cpfFormatado))
+            dto.Cpf = cpfFormatado;
+    }
+
+    private static void FormatarCpfSePossivel(IEnumerable<CriminosoGetDto> dtos)
+    {
+        foreach (var dto in dtos)
+        {
+            if (CpfFormatter.TryFormatar(dto.Cpf, out var cpfFormatado))
+                dto.Cpf = cpfFormatado;
+        }
+    }
+
     [HttpGet("{id}")] // Público
     public async Task<IActionResult> ObterPorId(int id)
     {
@@ -37,12 +52,10 @@ public class CriminosoController : ControllerBase
             return NotFound();
 
         var dto = _mapper.Map<CriminosoGetDto>(criminoso);
-
-        criminoso.Cpf = CpfFormatter.Formatar(criminoso.Cpf);
+        FormatarCpfSePossivel(dto);
 
         return Ok(dto);
     }
-
 
     [HttpGet("ObterTodos")]
     public async Task<IActionResult> ObterTodos()
@@ -50,11 +63,7 @@ public class CriminosoController : ControllerBase
         var criminoso = await _contexto.Criminosos.ToListAsync();
 
         var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
-
-        foreach (var i in dtos)
-        {
-            i.Cpf = CpfFormatter.Formatar(i.Cpf);
-        }
+        FormatarCpfSePossivel(dtos);
 
         return Ok(dtos);
     }
@@ -71,10 +80,7 @@ public class CriminosoController : ControllerBase
         .ToListAsync();
 
         var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
-        foreach (var i in dtos)
-        {
-            i.Cpf = CpfFormatter.Formatar(i.Cpf);
-        }
+        FormatarCpfSePossivel(dtos);
 
         return Ok(dtos);
     }
@@ -87,6 +93,8 @@ public class CriminosoController : ControllerBase
             return BadRequest(new { Error = "Informe um CPF para a pesquisa."});
 
         var cpfNormalizado = CpfFormatter.Normalizar(cpf);
+        if (cpfNormalizado.Length != 11)
+            return BadRequest(new { Error = "Informe um CPF válido para a pesquisa."});
 
         var criminoso = await _contexto.Criminosos
             .FirstOrDefaultAsync(c => c.Cpf == cpfNormalizado);
@@ -95,8 +103,7 @@ public class CriminosoController : ControllerBase
             return NotFound();
 
         var dto = _mapper.Map<CriminosoGetDto>(criminoso);
-
-        dto.Cpf = CpfFormatter.Formatar(criminoso.Cpf);
+        FormatarCpfSePossivel(dto);
 
         return Ok(dto);
     }
@@ -109,11 +116,8 @@ public class CriminosoController : ControllerBase
             .Where(x => x.Status == status)
             .ToListAsync();
         
-        var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);        
-         foreach (var i in dtos)
-        {
-            i.Cpf = CpfFormatter.Formatar(i.Cpf);
-        }
+        var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
+        FormatarCpfSePossivel(dtos);
 
         return Ok(dtos);
     }
@@ -129,10 +133,7 @@ public class CriminosoController : ControllerBase
             .ToListAsync();
 
         var dtos = _mapper.Map<List<CriminosoGetDto>>(criminoso);
-        foreach (var i in dtos)
-        {
-            i.Cpf = CpfFormatter.Formatar(i.Cpf);
-        }
+        FormatarCpfSePossivel(dtos);
 
         return Ok(dtos);
     }
@@ -144,23 +145,29 @@ public class CriminosoController : ControllerBase
     [Authorize(Roles = "Admin")]
     public async Task<IActionResult> Incluir(CriminosoCreateDto criminosoDto)
     {
+        if (criminosoDto == null)
+            return BadRequest(new { Erro = "Payload inválido." });
+
+        if (string.IsNullOrWhiteSpace(criminosoDto.NomeCompleto))
+            return BadRequest(new { Erro = "Campo Nome Completo não pode ser vazio" });
+
+        var cpfNormalizado = CpfFormatter.Normalizar(criminosoDto.Cpf);
+        if (cpfNormalizado.Length != 11)
+            return BadRequest(new { Erro = "Campo CPF deve conter 11 dígitos." });
+
+        if (criminosoDto.Antecedentes == null || !criminosoDto.Antecedentes.Any())
+            return BadRequest(new { Erro = "Campo Antecedentes não pode ser vazio" });
+
+        if (string.IsNullOrWhiteSpace(criminosoDto.Endereco))
+            return BadRequest(new { Erro = "Campo Endereço não pode ser vazio" });
+
         var criminoso = _mapper.Map<Criminoso>(criminosoDto);
+        criminoso.Cpf = cpfNormalizado;
 
         if (!User.IsInRole("Admin"))
         {
             criminoso.Status = EnumStatusCriminoso.Pendente;
         }
-
-        var cpfFormatado = CpfFormatter.Formatar(criminoso.Cpf);
-
-        if (criminoso.NomeCompleto == null)
-            return BadRequest(new { Erro = "Campo Nome Completo não pode ser vazio" });
-        if (cpfFormatado.Equals(string.Empty))
-            return BadRequest(new { Erro = "Campo CPF não pode ser vazio" });
-        if (criminoso.Antecedentes == null)
-            return BadRequest(new { Erro = "Campo Antecedentes não pode ser vazio" });
-        if (criminoso.Endereco == null)
-            return BadRequest(new { Erro = "Campo Endereço não pode ser vazio" });
 
         await _contexto.Criminosos.AddAsync(criminoso);
         await _contexto.SaveChangesAsync();
