@@ -4,7 +4,7 @@ on:
   push:
     branches: ['staging'] # Dispara quando houver push na branch staging
     paths:
-      - 'frontend/**'      # Roda a Action apenas se houver alterações dentro da pasta frontend
+      - 'src/frontend/**'      # Roda a Action apenas se houver alterações dentro da pasta frontend
 
 permissions:
   contents: read
@@ -30,14 +30,14 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-          cache-dependency-path: './frontend/package-lock.json' # Aponta para o lockfile na subpasta
+          cache-dependency-path: '.src/frontend/package-lock.json' # Aponta para o lockfile na subpasta
 
       - name: Install dependencies
-        working-directory: ./frontend                      # Executa npm ci dentro de frontend/
+        working-directory: .src/frontend                      # Executa npm ci dentro de frontend/
         run: npm ci
 
       - name: Build project
-        working-directory: ./frontend                      # Executa npm run build dentro de frontend/
+        working-directory: .src/frontend                      # Executa npm run build dentro de frontend/
         run: npm run build
 
       - name: Setup Pages
@@ -46,7 +46,7 @@ jobs:
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          path: './frontend/out'                          # Aponta para a pasta de build gerada dentro de frontend/ (mude para ./frontend/build se usar CRA)
+          path: './src/frontend/out'                          # Aponta para a pasta de build gerada dentro de frontend/ (mude para ./frontend/build se usar CRA)
 
       - name: Deploy to GitHub Pages
         id: deployment
