@@ -22,6 +22,20 @@ public class JwtService
 
     public string GerarToken(int usuarioId,string email, string role)
     {
+        if (usuarioId <= 0)
+        {
+            throw new ArgumentException("ID do usuário deve ser maior que zero.", nameof(usuarioId));
+        }
+
+        if (string.IsNullOrEmpty(email))
+        {
+            throw new ArgumentException("Email não pode ser nulo ou vazio.", nameof(email));
+        }
+
+        if (string.IsNullOrEmpty(role))
+        {
+            throw new ArgumentException("Role não pode ser nulo ou vazio.", nameof(role));
+        }
         var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_secretKey));
         var credenciais = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
 
