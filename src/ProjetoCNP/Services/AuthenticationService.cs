@@ -54,7 +54,7 @@ public class AuthenticationService
             Ativo = true
         };
 
-        _context.Usuarios.AddAsync(usuario);
+        await _context.Usuarios.AddAsync(usuario);
         await _context.SaveChangesAsync();
         return true;
     }
