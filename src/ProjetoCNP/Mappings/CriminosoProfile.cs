@@ -8,8 +8,10 @@ namespace PROJETOCNP.Mappings
     {
         public CriminosoProfile()
         {
-            CreateMap<CriminosoCreateDto, Criminoso>();
-            CreateMap<CriminosoUpdateDto, Criminoso>();
+            CreateMap<CriminosoCreateDto, Criminoso>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
+            CreateMap<CriminosoUpdateDto, Criminoso>()
+                .ForMember(dest => dest.Id, opt => opt.Ignore());
             CreateMap<Criminoso, CriminosoGetDto>();
             CreateMap<Criminoso, CriminosoUpdateDto>();
         }
