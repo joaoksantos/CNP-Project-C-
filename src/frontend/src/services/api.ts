@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URL = /*process.env.NEXT_PUBLIC_API_URL ||*/ 'https://cnp-project-c-staging.up.railway.app'
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'projectcnp-h2b5bmh8esajcaar.westus3-01.azurewebsites.net'
 
 const api = axios.create({
   baseURL: API_URL,
