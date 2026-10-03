@@ -33,7 +33,7 @@ jobs:
           cache-dependency-path: '.src/frontend/package-lock.json' # Aponta para o lockfile na subpasta
 
       - name: Install dependencies
-        working-directory: .src/frontend                      # Executa npm ci dentro de frontend/
+        working-directory: src/frontend                      # Executa npm ci dentro de frontend/
         run: npm ci
 
       - name: Build project
