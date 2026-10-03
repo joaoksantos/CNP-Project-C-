@@ -7,7 +7,7 @@ const nextConfig = {
     unoptimized: true,
   },
   env: {
-    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'projectcnp-h2b5bmh8esajcaar.westus3-01.azurewebsites.net',
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'https://projectcnp-h2b5bmh8esajcaar.westus3-01.azurewebsites.net',
   },
 }
 
